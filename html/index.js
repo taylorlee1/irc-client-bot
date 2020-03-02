@@ -34,16 +34,11 @@
 
   var urlify = function(text) {
     var linkText = document.createTextNode(text);
-    if (!text.match(/^\d/)) {
-      return linkText;
-    }
 
     var link = document.createElement("A");
     link.appendChild(linkText);
     link.title = text;
-    var tokens = text.split(/\s+/);
-    console.log(tokens);
-    var filename = encodeURIComponent(tokens[1]);
+    var filename = encodeURIComponent(text);
     link.href = "/api/get-file?filename=" + filename;
     return link;
   }
@@ -52,15 +47,33 @@
     console.log(what);
     var maindiv = document.getElementById('maindiv');
 
-    var ul = document.createElement("UL");
+    var table = document.createElement("table");
     
     what.forEach(function (item, index) {
-      var il = document.createElement("LI");
-      il.appendChild(urlify(item));
-      ul.appendChild(il);
+
+      if (item.startsWith("#")) {
+       	return; 
+      }
+
+      var row = document.createElement("tr");
+      var tokens = item.split(/\s+/);
+      for (var i=0; i < 6; i++) {
+	if (typeof tokens[i] == 'undefined') {
+	  tokens[i] = '';
+	}
+
+        var td = document.createElement("td");
+        if ( i == 1 ) {
+          td.appendChild(urlify(tokens[i]));
+        } else {
+	  td.appendChild(document.createTextNode(tokens[i]));
+	}
+        row.appendChild(td);
+      }
+      table.appendChild(row);
     });
 
-    maindiv.appendChild(ul);
+    maindiv.appendChild(table);
   };
 
   get_listing(update_page);
