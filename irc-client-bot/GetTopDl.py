@@ -96,10 +96,10 @@ class Args():
         self.target = '#mg-chat'
         self.port = 6667
 
-def get_listing():
+def get_top_dl():
 
     now = time.time()
-    cache_file = 'get_listing.cache.yml'
+    cache_file = 'get_top_dl.cache.yml'
 
     if os.path.isfile(cache_file):
         filetime = os.stat(cache_file).st_mtime
@@ -108,7 +108,7 @@ def get_listing():
             return yaml.safe_load(open(cache_file, 'r'))
 
     l = Lister()
-    t = threading.Thread(target=_get_listing, args=(l,),)
+    t = threading.Thread(target=get_listing, args=(l,),)
     t.daemon = True
     t.start()
 
@@ -119,7 +119,7 @@ def get_listing():
 
     return l.notices
 
-def _get_listing(lister):
+def get_listing(lister):
     global target
 
     nickname = Nickname.Nickname()
@@ -150,6 +150,6 @@ if __name__ == '__main__':
             )
 
 
-    listing = get_listing()
+    listing = get_top_dl()
     for item in listing:
         logging.debug(item)
